@@ -19,6 +19,7 @@ import Index from "views/Index.jsx";
 import Profile from "views/examples/Profile.jsx";
 import Login from "views/examples/Login.jsx";
 import Logs from "views/examples/Tables.jsx";
+import NewSacco from "components/NewSacco.jsx";
 
 var routes = [
   {
@@ -49,6 +50,11 @@ var routes = [
     icon: "ni ni-key-25 text-info",
     component: Login,
     layout: "/auth"
+  },
+  {
+    path: "/new",
+    component: NewSacco,
+    layout: "/admin"
   },
 ];
 export default routes;

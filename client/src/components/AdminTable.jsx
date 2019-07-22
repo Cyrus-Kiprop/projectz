@@ -27,6 +27,7 @@ import {
 } from 'reactstrap';
 // core components
 import Header from 'components/Headers/Header.jsx';
+import { Link } from "react-router-dom"
 import AdminRow from 'components/AdminRow.jsx';
 
 export default class TableWhite extends React.Component {
@@ -38,9 +39,9 @@ export default class TableWhite extends React.Component {
     });
     return (
       <div>
-        <Button style={{ margin: '40px', float: 'right' }} color="success">
-          New Sacco
-        </Button>
+      <Link to="/admin/new">
+        <Button style={{margin:"40px", float: "right"}} color="success">New Sacco</Button>
+      </Link>
         <br />
         <UncontrolledDropdown style={{ marginTop: '20px' }} group>
           <DropdownToggle caret color="info" data-toggle="dropdown">
