@@ -1,0 +1,65 @@
+{
+  "name": "fika-safe",
+  "version": "1.0.0",
+  "description": "A Web app that ensures the safety of bodaboda customers",
+  "main": "server.js",
+  "scripts": {
+    "format": "prettier --write --single-quote --no-semi --print-width=120 --tab-width=2 \"src/**/*.{js,jsx} \"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon -w server server/server.js server.js",
+    "babel": "babel server.js --out-dir dist --source-maps",
+    "babel-watch": "babel server.js --out-dir dist --source-maps --watch",
+    "compile-server": "babel server --presets @babel/preset-env --out-dir dist --source-maps",
+    "watch-server": "babel server --presets @babel/preset-env --out-dir dist --source-maps --watch",
+    "compile": "webpack",
+    "build-watch": "webpack --watch",
+    "watch": "webpack-dev-server --hot --inline",
+    "dev-all": "npm run watch-server & npm start",
+    "lint": "eslint '**/*.{js,jsx}' --quiet",
+    "lint:fix": "eslint '**/*.{js,jsx}' --fix",
+    "lint1": "eslint --ext js,jsx src server webpack.config.js"
+  },
+  "eslintConfig": {
+    "settings": {
+      "react": {
+        "version": "999.999.999"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cyrus-Kiprop/fika-safe.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cyrus-Kiprop/fika-safe/issues"
+  },
+  "homepage": "https://github.com/Cyrus-Kiprop/fika-safe#readme",
+  "dependencies": {
+    "bcrypt": "3.0.6",
+    "body-parser": "1.19.0",
+    "concurrently": "4.1.1",
+    "error-stack-parser": "2.0.2",
+    "eval": "0.1.4",
+    "express": "^4.17.0",
+    "is-empty": "1.2.0",
+    "json-server": "^0.15.0",
+    "jsonwebtoken": "^8.5.1",
+    "locus": "2.0.1",
+    "mdbreact": "4.18.0",
+    "mongodb": "^3.2.6",
+    "mongoose": "5.6.2",
+    "mongoose-unique-validator": "2.0.3",
+    "prop-types": "15.7.2",
+    "query-params-mongo": "1.1.0",
+    "query-string": "6.7.0",
+    "source-map-support": "0.5.12",
+    "validator": "11.1.0",
+    "whatwg-fetch": "3.0.0",
+    "yup": "^0.27.0"
+  },
+  "devDependencies": {
+    "nodemon": "1.19.1"
+  }
+}
