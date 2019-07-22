@@ -46,14 +46,6 @@ class AdminNavbar extends React.Component {
             <UncontrolledCollapse navbar toggler="#navbar-collapse-main">
               <div className="navbar-collapse-header d-md-none">
                 <Row>
-                  <Col className="collapse-brand" xs="9">
-                    
-                      <img
-                        alt="..."
-                        src={require("assets/img/brand/argon-react.png")}
-                      />
-
-                  </Col>
                   <Col className="collapse-close" xs="6">
                     <button
                       className="navbar-toggler"

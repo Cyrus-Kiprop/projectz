@@ -35,6 +35,7 @@ import {
 } from "reactstrap";
 
 class Login extends React.Component {
+  
   render() {
     return (
       <>
@@ -49,7 +50,7 @@ class Login extends React.Component {
             </NavbarBrand>
               </div>
 
-                <small>sign in with credentials</small>
+                <strong>Sign In </strong>
 
               </div>
               <Form role="form">
