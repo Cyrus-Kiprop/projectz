@@ -16,7 +16,7 @@
 
 */
 import React from "react";
-import { Link } from "react-router-dom"
+import { Link, Redirect } from "react-router-dom"
 // reactstrap components
 import {
   Button,
@@ -35,7 +35,44 @@ import {
 } from "reactstrap";
 
 class Login extends React.Component {
-  
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: ''
+    };
+    console.log(props);
+  }
+
+  handleChange = event => {
+    event.preventDefault();
+
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  };
+
+  // handles the submit button
+  handleSubmit = event => {
+    event.preventDefault();
+    const data = this.state;
+    console.log(data);
+    this.submitCredentials(data);
+  };
+
+  submitCredentials = credentials => {
+    fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials)
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(err => console.log(err));
+    const {history } =this.props;
+    history.push(`/`);
+
+  };
   render() {
     return (
       <>
@@ -53,7 +90,7 @@ class Login extends React.Component {
                 <strong>Sign In </strong>
 
               </div>
-              <Form role="form">
+              <Form onSubmit={this.handleSubmit} role="form" noValidate>
                 <FormGroup className="mb-3">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
@@ -61,7 +98,12 @@ class Login extends React.Component {
                         <i className="ni ni-email-83" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Email" type="email" />
+                    <Input 
+                      name="username"
+                      value={this.state.username}
+                      onChange={this.handleChange} 
+                      placeholder="Email" type="email" 
+                      />
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -71,7 +113,12 @@ class Login extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Password" type="password" />
+                    <Input 
+                      name="password"
+                      value={this.state.password}
+                      onChange={this.handleChange} 
+                      placeholder="Password" type="password" 
+                      />
                   </InputGroup>
                 </FormGroup>
                 <div className="custom-control custom-control-alternative custom-checkbox">
@@ -88,11 +135,9 @@ class Login extends React.Component {
                   </label>
                 </div>
                 <div className="text-center">
-                <Link to="/">
-                  <Button className="my-4" color="primary" type="button">
+                  <Button className="my-4" color="primary" type="submit">
                     Sign in
                   </Button>
-                  </Link>
                 </div>
               </Form>
             </CardBody>
@@ -101,8 +146,8 @@ class Login extends React.Component {
             <Col xs="6">
               <a
                 className="text-light"
-                href="#pablo"
-                onClick={e => e.preventDefault()}
+                href="/auth/forgot-pasword"
+                // onClick={e => e.preventDefault()}
               >
                 <small>Forgot password?</small>
               </a>

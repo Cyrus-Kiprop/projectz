@@ -21,6 +21,7 @@ import Login from "views/examples/Login.jsx";
 import Logs from "views/examples/Tables.jsx";
 import NewSacco from "components/NewSacco.jsx";
 import AdminProfile from "views/examples/AdminProfile.jsx";
+import ResetPassword from "views/examples/ResetPassword.jsx";
 
 var routes = [
   {
@@ -56,6 +57,11 @@ var routes = [
     path: "/new",
     component: NewSacco,
     layout: "/admin"
+  },
+  {
+    path: "/forgot-pasword",
+    component: ResetPassword,
+    layout: "/auth"
   },
   {
     path: "/admin-profile",

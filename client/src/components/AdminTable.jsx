@@ -1,4 +1,5 @@
 import React from 'react';
+import Picker from './DatePicker.jsx'
 import { MDBCol, MDBIcon } from 'mdbreact';
 import PropTypes from 'prop-types';
 import {
@@ -65,7 +66,10 @@ export default class TableWhite extends React.Component {
             />
           </form>
         </MDBCol>
-
+          <div style={{marginLeft: "130px", marginTop: "-35px"}}>
+          <small>From  </small><Picker />
+          <small> To </small><Picker />
+          </div>
         <Table className="align-items-center table-flush" responsive>
           <thead className="thead-light">
             <tr>
