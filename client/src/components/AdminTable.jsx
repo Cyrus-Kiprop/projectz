@@ -46,12 +46,11 @@ export default class TableWhite extends React.Component {
         <br />
         <UncontrolledDropdown style={{ marginTop: '20px' }} group>
           <DropdownToggle caret color="info" data-toggle="dropdown">
-            Sort By
+            Sort
           </DropdownToggle>
           <DropdownMenu>
-            <DropdownItem>Sacco Name</DropdownItem>
-            <DropdownItem>Date</DropdownItem>
-            <DropdownItem>Status</DropdownItem>
+            <DropdownItem>A-Z</DropdownItem>
+            <DropdownItem>Z-A</DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
 
@@ -69,7 +68,17 @@ export default class TableWhite extends React.Component {
           <div style={{marginLeft: "130px", marginTop: "-35px"}}>
           <small>From  </small><Picker />
           <small> To </small><Picker />
+          <UncontrolledDropdown style={{ marginLeft: '30px' }} group>
+          <DropdownToggle caret color="info" data-toggle="dropdown">
+            Status
+          </DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem>Active</DropdownItem>
+            <DropdownItem>Inactive</DropdownItem>
+          </DropdownMenu>
+        </UncontrolledDropdown>
           </div>
+          
         <Table className="align-items-center table-flush" responsive>
           <thead className="thead-light">
             <tr>
