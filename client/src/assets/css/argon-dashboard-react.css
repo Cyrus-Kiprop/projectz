@@ -10356,8 +10356,8 @@ a.btn-icon-only {
     padding-right: 0 !important; }
   @media (min-width: 768px) {
     .main-content .container-fluid {
-      padding-left: 39px !important;
-      padding-right: 39px !important; } }
+      padding-left: 50px !important;
+      padding-right: 50px !important; } }
 
 .navbar-vertical.navbar-expand-xs.fixed-left + .main-content {
   margin-left: 250px; }
@@ -13975,4 +13975,8 @@ button:focus, :focus {
 .react-datepicker__portal .react-datepicker__navigation--next--disabled, .react-datepicker__portal .react-datepicker__navigation--next--disabled:hover {
   border-left-color: #e6e6e6;
   cursor: default;
+}
+
+.wincol{
+  background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
 }

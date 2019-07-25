@@ -1,21 +1,4 @@
-/*!
 
-=========================================================
-* Argon Dashboard React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-/*eslint-disable*/
 import React from "react";
 import { NavLink as NavLinkRRD, Link } from "react-router-dom";
 // nodejs library to set properties for components
@@ -216,7 +199,32 @@ class Sidebar extends React.Component {
               </InputGroup>
             </Form>
             {/* Navigation */}
-            <Nav navbar>{this.createLinks(routes)}</Nav>
+            <Nav navbar>
+
+            <NavItem >
+          <NavLink
+            to="/admin/home"
+            tag={NavLinkRRD}
+            onClick={this.closeCollapse}
+            activeClassName="active"
+          >
+            <i className="fa fa-tv" />
+            Dashboard
+          </NavLink>
+        </NavItem>
+        <NavItem >
+          <NavLink
+            to="/admin/logs"
+            tag={NavLinkRRD}
+            onClick={this.closeCollapse}
+            activeClassName="active"
+          >
+            <i className="fa fa-archive" />
+            Logs
+          </NavLink>
+        </NavItem>
+            
+            </Nav>
             {/* Divider */}
             <hr className="my-3" />
 

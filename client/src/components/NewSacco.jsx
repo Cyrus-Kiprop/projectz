@@ -16,12 +16,12 @@
 
 */
 import React from "react";
+// import AdminLayout from '../layouts/Admin.jsx'
 
 // reactstrap components
 import {
   Button,
   Card,
-  CardHeader,
   CardBody,
   FormGroup,
   Form,
@@ -31,11 +31,11 @@ import {
   Col
 } from "reactstrap";
 // core components
-import UserHeader from "components/Headers/UserHeader.jsx";
 
 class NewSacco extends React.Component {
   render() {
     return (
+      
       <div style={{marginTop: "160px"}}>
         {/* Page content */}
         <Container  className="mt--7" fluid>
@@ -252,6 +252,7 @@ class NewSacco extends React.Component {
           </Row>
         </Container>
       </div>
+     
     );
   }
 }
