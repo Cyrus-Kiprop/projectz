@@ -15,8 +15,8 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import { Link } from "react-router-dom"
+import React from 'react';
+import { Link } from 'react-router-dom';
 // reactstrap components
 
 import {
@@ -29,29 +29,32 @@ import {
   Input,
   Container,
   Row,
-  Col
-} from "reactstrap";
+  Col,
+} from 'reactstrap';
 // core components
-import UserHeader from "components/Headers/UserHeader.jsx";
-import { couldStartTrivia } from "typescript";
+import UserHeader from 'components/Headers/UserHeader.jsx';
+import AuthHelperMethods from 'AuthHelperMethods.js';
+//Our higher order component
+import withAuth from 'withAuth.js';
+import { couldStartTrivia } from 'typescript';
 
 class Profile extends React.Component {
   constructor() {
-    super()
+    super();
     this.state = {
       red: true,
-      name: "active"
-    }
+      name: 'active',
+    };
 
     // onDeactivate:
   }
   onDeactivate() {
-    this.setState({ red: !this.state.red })
-    this.setState({ name: !this.state.name })
+    this.setState({ red: !this.state.red });
+    this.setState({ name: !this.state.name });
   }
   render() {
-    let btn_class = this.state.red ? "info" : "danger";
-    let btn_name = this.state.name ? "Active" : "Deactivated";
+    let btn_class = this.state.red ? 'info' : 'danger';
+    let btn_name = this.state.name ? 'Active' : 'Deactivated';
 
     return (
       <>
@@ -62,12 +65,13 @@ class Profile extends React.Component {
             <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
               <Card className="card-profile shadow">
                 <Row className="justify-content-center">
-                  <Col className="order-lg-2" lg="3">
-
-                  </Col>
+                  <Col className="order-lg-2" lg="3" />
                 </Row>
 
-                <CardBody style={{ background: "#e4f0f7" }} className="pt-0 pt-md-4">
+                <CardBody
+                  style={{ background: '#e4f0f7' }}
+                  className="pt-0 pt-md-4"
+                >
                   <Row>
                     <div className="col">
                       <div className="card-profile-stats d-flex justify-content-center mt-md-5">
@@ -79,10 +83,8 @@ class Profile extends React.Component {
                     </div>
                   </Row>
                   <div className="text-center">
-                    <h3>
-                      Ubuntu Sacco
-                    </h3>
-                    <h3 style={{ background: "#cee0eb", borderRadius: "10px" }}>
+                    <h3>Ubuntu Sacco</h3>
+                    <h3 style={{ background: '#cee0eb', borderRadius: '10px' }}>
                       {btn_name}
                     </h3>
                     <div className="h5 font-weight-300">
@@ -102,10 +104,7 @@ class Profile extends React.Component {
                       Year Founded: 2018
                     </div>
                     <hr className="my-4" />
-                    <p>
-                      Description Description......
-                    </p>
-
+                    <p>Description Description......</p>
                   </div>
                 </CardBody>
               </Card>
@@ -114,12 +113,7 @@ class Profile extends React.Component {
               <Card className="bg-secondary shadow">
                 <CardHeader className="bg-white border-0">
                   <Link to="/admin/logs">
-                    <Button
-                      color="success"
-
-                    >
-                      Logs
-                      </Button>
+                    <Button color="success">Logs</Button>
                   </Link>
                   <Row className="align-items-center">
                     <Col xs="8">
@@ -339,7 +333,7 @@ class Profile extends React.Component {
                         onClick={e => e.preventDefault()}
                       >
                         Save
-                </Button>
+                      </Button>
                     </div>
                   </Form>
                 </CardBody>
@@ -352,4 +346,4 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+export default withAuth(Profile);

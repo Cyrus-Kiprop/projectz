@@ -1,5 +1,5 @@
-import React from "react";
-import { Link, Redirect } from "react-router-dom"
+import React from 'react';
+import { Link, Redirect } from 'react-router-dom';
 // reactstrap components
 import {
   Button,
@@ -14,69 +14,33 @@ import {
   InputGroupText,
   InputGroup,
   Row,
-  Col
-} from "reactstrap";
+  Col,
+} from 'reactstrap';
 
 class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: ''
-    };
-    console.log(props);
-  }
-
-  handleChange = event => {
-    event.preventDefault();
-
-    this.setState({
-      [event.target.name]: event.target.value
-    });
-  };
-
-  // handles the submit button
-  handleSubmit = event => {
-    event.preventDefault();
-    const data = this.state;
-    console.log(data);
-    this.submitCredentials(data);
-  };
-
-  submitCredentials = credentials => {
-    fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials)
-    })
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(err => console.log(err));
-    const {history } =this.props;
-    history.push(`/`);
-
-  };
   componentDidMount() {
-    document.body.classList.add("bg-default");
+    document.body.classList.add('bg-default');
   }
   render() {
+    const { handleChange, handleSubmit, email, password } = this.props;
     return (
       <>
         <Col lg="5" md="7">
-
           <Card className="bg-secondary shadow border-0">
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center text-muted mb-4">
-              <div className="container div1" style={{size: "50px"}}>
-              <NavbarBrand >
-              <img alt="..." src={require("assets/img/brand/fikas.png")} />
-            </NavbarBrand>
-              </div>
+                <div className="container div1" style={{ size: '50px' }}>
+                  <NavbarBrand>
+                    <img
+                      alt="..."
+                      src={require('assets/img/brand/fikas.png')}
+                    />
+                  </NavbarBrand>
+                </div>
 
                 <strong>Sign In </strong>
-
               </div>
-              <Form onSubmit={this.handleSubmit} role="form" noValidate>
+              <Form onSubmit={handleSubmit} role="form" noValidate>
                 <FormGroup className="mb-3">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
@@ -84,12 +48,13 @@ class Login extends React.Component {
                         <i className="ni ni-email-83" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input 
-                      name="username"
-                      value={this.state.username}
-                      onChange={this.handleChange} 
-                      placeholder="Email" type="email" 
-                      />
+                    <Input
+                      name="email"
+                      value={email}
+                      onChange={handleChange}
+                      placeholder="Email"
+                      type="email"
+                    />
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -99,12 +64,13 @@ class Login extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input 
+                    <Input
                       name="password"
-                      value={this.state.password}
-                      onChange={this.handleChange} 
-                      placeholder="Password" type="password" 
-                      />
+                      value={password}
+                      onChange={handleChange}
+                      placeholder="Password"
+                      type="password"
+                    />
                   </InputGroup>
                 </FormGroup>
                 <div className="custom-control custom-control-alternative custom-checkbox">

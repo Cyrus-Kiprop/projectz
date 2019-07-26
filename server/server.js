@@ -1,7 +1,24 @@
-const sourceMapSupport = require('source-map-support');
-// import queryString from 'query-String'
-// import { MongoClient } from 'mongodb';
 const mongoose = require('mongoose');
+const secret = 'mysecretsshhh';
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const exjwt = require('express-jwt');
+const express = require('express')
+const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
+
+// authentication middlware
+// const jwtMW = require('./middleware');
+const app = express();
+
+/*========= Here we want to let the server know that we should expect and allow a header with the content-type of 'Authorization' ============*/
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
+  next();
+});
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
 
 // mongoose models    .
 const { Sacco, Rider, UserModel } = require('./db.models.js');
@@ -17,32 +34,15 @@ mongoose.set('useFindAndModify', false);
 
 const ObjectId = require('mongodb').ObjectID;
 
-sourceMapSupport.install();
 
-const express = require('express');
-const bodyParser = require('body-parser');
-
-// an instance of express
-const app = express();
-
-// mounting other middlewares into our server.js
-app.use(express.static('static'));
-
-
-const qpm = require('query-params-mongo');
-const mongodb = require('mongodb');
-const db = require('./keys').mongodbURI;
-
-const processQuery = qpm({
-  autoDetect: [{ fieldPattern: /_id$/, dataType: 'objectId' }],
-  converters: { objectId: mongodb.ObjectID },
+const jwtMW = exjwt({
+  secret: 'keyboard cat 4 ever'
 });
 
+// an instance of express
 
-app.use(bodyParser.json());
-// OUR SERVER CODE WILL GO HERE
+const db = require('./keys').mongodbURI;
 
-// BASIC CRUD APIS
 // admin login endpoint
 app.post("/api/register", async (request, response) => {
   try {
@@ -53,24 +53,55 @@ app.post("/api/register", async (request, response) => {
     response.status(500).send(error.message);
   }
 });
-
-app.post("/api/login", async (request, response) => {
-  try {
-    const user = await UserModel.findOne({ username: request.body.username }).exec();
-    if (!user) {
-      return response.status(400).send({ message: "The username does not exist" });
-    }
-    user.comparePassword(request.body.password, function (error, match) {
-      if (!match) {
-        return response.status(400).send({ message: "The password is invalid" });
-      }
-    });
-    response.send({ message: "The username and password combination is correct!" });
-  } catch (error) {
-    response.status(500).send(error);
-  }
+// check our token if it is true
+app.get('/checkToken', jwtMW, function (req, res) {
+  res.sendStatus(200);
 });
 
+
+// admin login endpoint
+app.post('/api/login', (req, res) => {
+  const { email, password } = req.body;
+  console.log("User submitted: ", email, password);
+
+  UserModel.findOne(
+    { email: email }
+  )
+    .then((user) => {
+      console.log("User Found: ", user);
+      if (user === null) {
+        res.json(false);
+      }
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (result === true) {
+          console.log("Valid!");
+          let token = jwt.sign({ email: user.email }, 'keyboard cat 4 ever', { expiresIn: 129600 }); // Signing the token
+          res.json({
+            sucess: true,
+            err: null,
+            token
+          });
+        }
+        else {
+          console.log("Entered Password and Hash do not match!");
+          res.status(401).json({
+            sucess: false,
+            token: null,
+            err: 'Entered Password and Hash do not match!'
+          });
+        }
+      });
+    })
+});
+
+app.get('/', jwtMW /* Using the express jwt MW here */, (req, res) => {
+  console.log("Web Token Checked.")
+  res.send('You are authenticated'); //Sending some response when authenticated
+});
+
+// app.get('/checkToken', jwtMW, function (req, res) {
+//   res.sendStatus(200);
+// });
 
 app.get('/', (req, res) => {
   res.json('this is our first server page');
@@ -184,7 +215,7 @@ app.delete('api/riders/:id', (req, res) => {
 });
 // THIS IS THE SACCOS APIS
 // get all saccos
-app.get('/api/saccos', (req, res) => {
+app.get('/api/saccos', jwtMW, (req, res) => {
   const { status, dateLte, dateGte } = req.query // destructuring
   console.log(new Date(dateLte));
   console.log(new Date(dateGte));
@@ -223,7 +254,7 @@ app.get('/api/saccos', (req, res) => {
   }
 
 });
-app.get('/api/saccos/:id', (req, res) => { // parameter
+app.get('/api/saccos/:id', jwtMW, (req, res) => { // parameter
   let saccoId;
   try {
     saccoId = req.params.id;
@@ -239,7 +270,7 @@ app.get('/api/saccos/:id', (req, res) => { // parameter
 });
 
 // post api
-app.post('api/saccos', (req, res) => {
+app.post('/api/saccos', jwtMW, (req, res) => {
   const newSacco = new Sacco(req.body);
   newSacco.save().then((addedSacco) => {
     // console.log(addedSacco);
@@ -249,7 +280,7 @@ app.post('api/saccos', (req, res) => {
   });
 });
 
-app.delete('/api/saccos/:id', (req, res) => {
+app.delete('/api/saccos/:id', jwtMW, (req, res) => {
   let saccosId;
   try {
     saccosId = req.params.id;
@@ -266,7 +297,7 @@ app.delete('/api/saccos/:id', (req, res) => {
 });
 
 
-app.put('/api/saccos/:id', (req, res) => {
+app.put('/api/saccos/:id', jwtMW, (req, res) => {
   let saccosId;
   console.log(req.params.id);
   try {
@@ -292,11 +323,15 @@ app.put('/api/saccos/:id', (req, res) => {
 
 // creating a connection to mongoose
 // 'mongodb://localhost/fika-safe'
-mongoose.connect('mongodb://localhost/fika-safe', { useNewUrlParser: true })
+mongoose
+  .connect('mongodb://localhost/fika-safe', { useNewUrlParser: true })
   .then(() => {
     app.listen(4000, () => {
-      console.log('Listening on port 4000');
+      console.log("Listening on port 4000");
     });
-  }).catch((error) => {
-    console.log({ message: `Unable to establish a connection to the server ${error}` });
+  })
+  .catch(error => {
+    console.log({
+      message: `Unable to establish a connection to the server ${error}`
+    });
   });

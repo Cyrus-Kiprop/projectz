@@ -1,5 +1,5 @@
-
-import React from "react";
+import React from 'react';
+import { withRouter } from "react-router";
 
 // reactstrap components
 import {
@@ -19,10 +19,13 @@ import {
   Table,
   Container,
   Row,
-  UncontrolledTooltip
-} from "reactstrap";
+  UncontrolledTooltip,
+} from 'reactstrap';
 // core components
-import Header from "components/Headers/Header.jsx";
+import Header from 'components/Headers/Header.jsx';
+import AuthHelperMethods from 'AuthHelperMethods.js';
+//Our higher order component
+import withAuth from 'withAuth.js';
 
 class Tables extends React.Component {
   render() {
@@ -52,16 +55,14 @@ class Tables extends React.Component {
                       <th scope="row">
                         <Media className="align-items-center">
                           <Media>
-                            <span className="mb-0 text-sm">
-                              0704563452
-                            </span>
+                            <span className="mb-0 text-sm">0704563452</span>
                           </Media>
                         </Media>
                       </th>
                       <td>KMEN785G</td>
                       <td>
                         <Badge color="" className="badge-dot mr-4">
-                          02/07/2019  11:34:21
+                          02/07/2019 11:34:21
                         </Badge>
                       </td>
                     </tr>
@@ -69,20 +70,17 @@ class Tables extends React.Component {
                       <th scope="row">
                         <Media className="align-items-center">
                           <Media>
-                            <span className="mb-0 text-sm">
-                              0778464527
-                            </span>
+                            <span className="mb-0 text-sm">0778464527</span>
                           </Media>
                         </Media>
                       </th>
                       <td>KMDK563T</td>
                       <td>
                         <Badge color="" className="badge-dot mr-4">
-                          09/07/2019  16:34:21
+                          09/07/2019 16:34:21
                         </Badge>
                       </td>
                     </tr>
-
                   </tbody>
                 </Table>
                 <CardFooter className="py-4">
@@ -146,4 +144,4 @@ class Tables extends React.Component {
   }
 }
 
-export default Tables;
+export default withRouter(withAuth(Tables));
