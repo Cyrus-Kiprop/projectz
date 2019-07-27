@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import {
   Badge,
   DropdownMenu,
@@ -9,34 +8,22 @@ import {
   Media,
 } from 'reactstrap';
 
-export default class AdminRow extends Component {
-  constructor(props) {
-    super(props);
-    const { sacco } = props;
-    console.log(sacco.status);
-    this.state = {
-      status: sacco.status,
-    };
-  }
-
-  render() {
-    const { status } = this.state;
-    const { sacco } = this.props;
-    console.log(sacco);
-    return (
-      <>
-        <tr>
-          <th scope="row">
-            <Media className="align-items-center">
+  export const Row= ({saccoName, registeredDate, status, contacts, location}) => (
+ 
+    <thead>
+    <tr>
+      <th scope="row">
+      <Media className="align-items-center">
               <Media>
-                <a href="http://localhost:3001/admin/user-profile">
-                  <span className="mb-0 text-sm">{sacco.name}</span>
+                <a href="/admin/sacco-profile">
+                  <span className="mb-0 text-sm">
+      {saccoName}
+      </span>
                 </a>
               </Media>
-            </Media>
-          </th>
-          <td>{sacco.created.substr(0, 10)}</td>
-          <td>
+            </Media></th>
+      <th>{registeredDate}</th>
+      <th>
             {status === 'Active' ? (
               <Badge color="" className="badge-dot mr-4">
                 <i className="bg-success" />
@@ -48,43 +35,38 @@ export default class AdminRow extends Component {
                 Deactivated
               </Badge>
             )}
-          </td>
-          <td>
-            <span className="mb-0 text-sm">{sacco.telephone_number}</span>
-          </td>
-          <td>
+          </th>
+          <th>
+            <span className="mb-0 text-sm">{contacts}</span>
+          </th>
+          <th>
             <div className="d-flex align-items-center">
-              <span className="mb-0 text-sm">{sacco.address}</span>
+              <span className="mb-0 text-sm">{location}</span>
             </div>
-          </td>
-          <td className="text-right">
-            <UncontrolledDropdown>
+          </th>
+          <th className="text-right">
+           <UncontrolledDropdown>
               <DropdownToggle
                 className="btn-icon-only text-light"
                 href="#pablo"
                 role="button"
                 size="sm"
                 color=""
-                onClick={e => e.preventDefault()}
+                
               >
                 <i className="fas fa-ellipsis-v" />
               </DropdownToggle>
               <DropdownMenu className="dropdown-menu-arrow" right>
-                <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                <DropdownItem href="#pablo" >
                   Edit
                 </DropdownItem>
-                <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                <DropdownItem href="#pablo" >
                   Deactivate
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
-          </td>
-        </tr>
-      </>
-    );
-  }
-}
-
-AdminRow.propTypes = {
-  sacco: PropTypes.object,
-};
+          </th>
+     
+      </tr> 
+      </thead>
+  );

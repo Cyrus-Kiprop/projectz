@@ -71,10 +71,6 @@ const saccoSchema = new mongoose.Schema({
   description: String,
   website: {
     type: String,
-    validate: {
-      validator: link => link.indexOf('www') === 0,
-      message: 'Webpage URL must start with https://',
-    }
   },
   created: {
     type: Date,
