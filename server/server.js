@@ -274,8 +274,11 @@ app.post('/api/saccos', jwtMW, (req, res) => {
   const newSacco = new Sacco(req.body);
   newSacco.save().then((addedSacco) => {
     // console.log(addedSacco);
+
     res.status(200).json(addedSacco);
   }).catch((error) => {
+    console.log(error);
+    console.log(error);
     res.status(500).json({ message: `Internal Server Error: ${error}` });
   });
 });

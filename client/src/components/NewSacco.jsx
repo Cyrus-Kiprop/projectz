@@ -1,20 +1,4 @@
-/*!
 
-=========================================================
-* Argon Dashboard React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 // import AdminLayout from '../layouts/Admin.jsx'
 
@@ -32,8 +16,179 @@ import {
 } from "reactstrap";
 // core components
 
+const emailRegex = RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+
+
+const formValid = ({ formErrors, ...rest }) => {
+  let valid = true;
+  // validate form errors being empty
+  Object.values(formErrors).forEach(val => {
+    val.length > 0 && (valid = false);
+  });
+  // validate the form was filled out
+  Object.values(rest).forEach(val => {
+    val === null && (valid = false);
+  });
+  return valid;
+};
 class NewSacco extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      description: '',
+      website: '',
+      date_founded: '',
+      name: '',
+      address: '',
+      registration_number: '',
+      telephone_number: '',
+      email: '',
+      postal_code: 0,
+      password: '',
+      confirmPassword: '',
+      // sendPassword: '',
+      // newUser: null,
+      formErrors: {
+        saccoName: "",
+        registrationNumber: "",
+        postal_code:"",
+        email: "",
+        year: "",
+        phone: "",
+        address: "",
+        website: "",
+        password: "",
+        confirmpassword: ""
+      }
+    };
+  }
+
+  // validation
+  handleChange = e => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    let formErrors = { ...this.state.formErrors };
+
+    switch (name) {
+      case "name":
+        formErrors.saccoName =
+          value.length < 3 ? "Required" : "";
+        break;
+      case "registration_number":
+        formErrors.registrationNumber =
+          value.length < 3 ? "minimum 3 characaters required" : "";
+        break;
+      case "email":
+        formErrors.email = emailRegex.test(value)
+          ? ""
+          : "invalid email address";
+        break;
+      case "date_founded":
+        formErrors.year =
+          value.length < 3 ? "minimum 3 characaters required" : "";
+        break;
+      case "telephone_number":
+        formErrors.phone =
+          (/^[0-9]{10}$/).test(value) ? "" : "Invalid phone number";
+        break;
+      case "address":
+        formErrors.address =
+          value.length > 5 ? "Invalid address" : "";
+        break;
+      case "website":
+        formErrors.website =
+          value.length < 3 ? "minimum 3 characaters required" : "";
+        break;
+      case "password":
+        formErrors.password =
+          value.length < 6 ? "Minimum 6 characaters required" : "";
+        break;
+        case "postal_code":
+        formErrors.postal_code =
+          value.length > 8 ? "Invalid code" : "";
+        break;
+      case "confirmPassword":
+        formErrors.confirmpassword =
+          value.length < 6 ? "minimum 6 characaters required" : "";
+          formErrors.confirmpassword =
+          value != this.state.password ? "Password don't match!!" : "";
+        break;
+      default:
+    }
+
+    this.setState({ formErrors, [name]: value });
+  };
+
+  //handler functions
+  // handleChange = event => {
+  //   const target = event.target;
+  //   const name = target.name;
+  //   const value = target.value;
+  //   this.setState({
+  //     [name]: value,
+  //   });
+  //   console.log(this.state);
+  // };
+  handleSubmit = () => {
+    const data = this.state;
+    // invoke the saveData with the new data
+    if (formValid(this.state)) {
+
+    this.saveData({
+      description: data.description,
+      website: data.website,
+      date_founded: data.date_founded,
+      name: data.name,
+      registration_number: data.registration_number,
+      telephone_number: data.telephone_number,
+      email: data.email,
+      address: `P.O.BOX ${data.address}`,
+      postal_code: data.postal_code,
+      password: data.confirmPassword,
+    });
+  }else{
+    console.log("Invalid");
+  }
+  };
+// saves the data to the db
+  saveData = data => {
+    fetch(`/api/saccos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        const { history } = this.props;
+        //history.push(`/admin/index`);
+      })
+      .catch(err => {
+        console.log(err);
+        alert('unable create the sacco');
+      });
+  };
+
+
   render() {
+    const {
+      description,
+      website,
+      date_founded,
+      name,
+      address,
+      registration_number,
+      password,
+      confirmPassword,
+      telephone_number,
+      email,
+      postal_code,
+    } = this.state;
+
+    const {formErrors} = this.state
+
     return (
       
       <div style={{marginTop: "160px"}}>
@@ -43,7 +198,7 @@ class NewSacco extends React.Component {
             <Col className="order-xl-1" xl="8">
               <Card className="bg-secondary shadow">
                 <CardBody>
-                  <Form>
+                  <Form  >
                     <h6 className="heading-small text-muted mb-4">
                       User information
                     </h6>
@@ -59,10 +214,15 @@ class NewSacco extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="sacconame"
+                              name="name"
+                              onChange={this.handleChange}
+                              value={name}
                               placeholder="Sacco Name"
                               type="text"
                             />
+                             {formErrors.saccoName.length > 0 && (
+                <span style={{color:"red",fontSize:15}}>{formErrors.saccoName}</span>
+              )}
                           </FormGroup>
                         </Col>
                         <Col lg="6">
@@ -75,10 +235,15 @@ class NewSacco extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-email"
+                              name="email"
+                              onChange={this.handleChange}
+                              value={email}
                               placeholder="Enter email"
                               type="email"
                             />
+                            {formErrors.email.length > 0 && (
+                <span style={{color:"red",fontSize:15,fontWeight: "bold"}}>{formErrors.email}</span>
+              )}
                           </FormGroup>
                         </Col>
                       </Row>
@@ -93,10 +258,15 @@ class NewSacco extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="registration-number"
+                              name="registration_number"
+                              onChange={this.handleChange}
+                              value={registration_number.toUpperCase() }
                               placeholder="Registration Number"
                               type="text"
                             />
+                            {formErrors.registrationNumber.length > 0 && (
+                              <span style={{color:"red",fontSize:15, fontWeight: "bold", fontStyle:"italic"}}>{formErrors.saccoName}</span>
+                            )}
                           </FormGroup>
                         </Col>
                         <Col lg="6">
@@ -108,11 +278,17 @@ class NewSacco extends React.Component {
                               Year Founded
                             </label>
                             <Input
+                            name="date_founded"
+                            onChange={this.handleChange}
+                            value={date_founded}
                               className="form-control-alternative"
-                              id="year-founded"
+                             
                               placeholder="Year founded"
                               type="text"
                             />
+                            {formErrors.year.length > 0 && (
+                <span style={{color:"red",fontSize:15, fontStyle: " italic"}}>{formErrors.year}</span>
+              )}
                           </FormGroup>
                         </Col>
                       </Row>
@@ -134,10 +310,15 @@ class NewSacco extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-address"
+                              name="address"
+                              onChange={this.handleChange}
+                              value={address}
                               placeholder="Enter Address"
-                              type="text"
+                              type="number"
                             />
+                            {formErrors.address.length > 0 && (
+                <span style={{color:"red",fontSize:15,fontWeigth:"bold",fontStyle:"italic"}}>{formErrors.address}</span>
+              )}
                           </FormGroup>
                         </Col>
                       </Row>
@@ -152,10 +333,15 @@ class NewSacco extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="phone"
+                              name="telephone_number"
+                              onChange={this.handleChange}
+                              value={telephone_number}
                               placeholder="Enter Phone Number"
-                              type="text"
+                              type="number"
                             />
+                            {formErrors.phone.length > 0 && (
+                <span style={{color:"red",fontSize:15,fontStyle:"italic",fontWeight:"bold"}}>{formErrors.phone}</span>
+              )}
                           </FormGroup>
                         </Col>
                         <Col lg="4">
@@ -168,10 +354,15 @@ class NewSacco extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="postal-code"
+                              name="postal_code"
+                              onChange={this.handleChange}
+                              value={postal_code}
                               placeholder="Postal code"
                               type="number"
                             />
+                            {formErrors.postal_code.length > 0 && (
+                <span style={{color:"red",fontSize:15, fontWeight:"bold", fontStyle:"italic"}}>{formErrors.postal_code}</span>
+              )}
                           </FormGroup>
                         </Col>
                         <Col lg="4">
@@ -184,10 +375,16 @@ class NewSacco extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="website"
+                             
+                              name="website"
+                              onChange={this.handleChange}
+                              value={website}
                               placeholder="website"
                               type="text"
                             />
+                              {formErrors.website.length > 0 && (
+                <span style={{color:"red",fontSize:15, fontWeight:"bold", fontStyle:"italic"}}>{formErrors.website}</span>
+              )}
                           </FormGroup>
                         </Col>
                       </Row>
@@ -202,9 +399,14 @@ class NewSacco extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="password"
+                              name="password"
+                              onChange={this.handleChange}
+                              value={password}
                               type="password"
                             />
+                            {formErrors.password.length > 0 && (
+                <span style={{color:"red",fontSize:15, fontWeight:"bold", fontStyle:"italic"}}>{formErrors.password}</span>
+              )}
                           </FormGroup>
                         </Col>
                         <Col lg="6">
@@ -217,9 +419,16 @@ class NewSacco extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="confirm-password"
+                              name="confirmPassword"
+                              onChange={this.handleChange}
+                              value={confirmPassword}
                               type="password"
                             />
+                            {formErrors.confirmpassword.length > 0 && (
+                <span style={{color:"red",fontSize:15, fontWeight:"bold", fontStyle:"italic"}}>
+                  {formErrors.confirmpassword}
+                </span>
+              )}
                           </FormGroup>
                         </Col>
                       </Row>
@@ -231,6 +440,9 @@ class NewSacco extends React.Component {
                       <FormGroup>
                         <label>Description</label>
                         <Input
+                        name="description"
+                        onChange={this.handleChange}
+                        value={description}
                           className="form-control-alternative"
                           placeholder="A few words about you..."
                           rows="4"
@@ -239,8 +451,8 @@ class NewSacco extends React.Component {
                       </FormGroup>
                       <Button
                   color="info"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
+                  type="button"
+                  onClick={this.handleSubmit}
                 >
                   Save
                 </Button>
