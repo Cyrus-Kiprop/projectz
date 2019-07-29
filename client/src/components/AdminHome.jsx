@@ -36,19 +36,58 @@ export default class TableWhite extends React.Component {
   state = {
     sort: { column: "col", order: "desc" },
     columns: {
-      col: { name: "Satatus", filterText: "", defaultSortOrder: "desc"},
+      col: { name: "Satatus", filterText: "", defaultSortOrder: "desc" },
 
-    }
+    },
+    query: "",
+    data: [],
+    filteredData: []
   }
-  
+
+  handleInputChange = event => {
+    const query = event.target.value;
+
+    this.setState(prevState => {
+      const filteredData = prevState.data.filter(element => {
+        return element.name.toLowerCase().includes(query.toLowerCase());
+      });
+
+      return {
+        query,
+        filteredData
+      };
+    });
+  };
+
+  getData = () => {
+    fetch(`/api/saccos`)
+      .then(res => res.json())
+      .then(data => {
+        const { query } = this.state;
+        const filteredData = data.filter(element => {
+          return element.name.toLowerCase().includes(query.toLowerCase());
+        });
+
+          this.setState({
+          data,
+          filteredData
+        });
+      })
+      .catch(err=>console.log(err));
+  };
+
+  componentWillMount() {
+    this.getData();
+  }
+
   render() {
 
 
     return (
       <div>
-      <Link to="/admin/new-sacco">
-        <Button style={{margin:"40px", float: "right"}} color="success">New Sacco</Button>
-      </Link>
+        <Link to="/admin/new-sacco">
+          <Button style={{ margin: "40px", float: "right" }} color="success">New Sacco</Button>
+        </Link>
         <br />
         <UncontrolledDropdown style={{ marginTop: '20px' }} group>
           <DropdownToggle caret color="info" data-toggle="dropdown">
@@ -60,7 +99,7 @@ export default class TableWhite extends React.Component {
           </DropdownMenu>
         </UncontrolledDropdown>
 
-        <MDBCol style={{ float: 'right'}} md="4">
+        <MDBCol style={{ float: 'right' }} md="4">
           <form className="form-inline mt-4 mb-4">
             <MDBIcon icon="search" />
             <input
@@ -68,12 +107,15 @@ export default class TableWhite extends React.Component {
               type="text"
               placeholder="Search"
               aria-label="Search"
+              value={this.state.query}
+              onChange={this.handleInputChange}
             />
           </form>
+          <div>{this.state.filteredData.map(i => <p>{i.name}</p>)}</div>
         </MDBCol>
-          <div style={{marginLeft: "130px", marginTop: "-43px"}}>
+        <div style={{ marginLeft: "130px", marginTop: "-43px" }}>
           <Picker /></div>
-          <UncontrolledDropdown style={{ marginTop:"-120px" }} group>
+        <UncontrolledDropdown style={{ marginTop: "-120px" }} group>
           <DropdownToggle caret color="info" data-toggle="dropdown">
             Status
           </DropdownToggle>
@@ -82,7 +124,7 @@ export default class TableWhite extends React.Component {
             <DropdownItem>Inactive</DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
-       <AdminTable />
+        <AdminTable />
         <CardFooter className="py-4">
           <nav aria-label="...">
             <Pagination
