@@ -39,8 +39,9 @@ import withAuth from 'withAuth.js';
 import { couldStartTrivia } from 'typescript';
 
 class Profile extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    console.log(props)
     this.state = {
       red: true,
       name: 'active',
