@@ -20,6 +20,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+
+//solving cors errors
+// Add headers to the response. This will not give any response. It will only edit the information
+// This is also a way to protect your application such that only your domain can access your application
+app.use((req, res, next)=> {
+  res.header('Access-Control-Allow-Origin', '*');    // * gives access to any origin
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
+  if(req.method === 'OPTIONS') {
+      res.header('Access-Control-Allow-Methods', 'Put, Post, Patch, Delete, Update, Get' );
+      return res.status(200).json({});
+  }
+});
+
+
 // mongoose models    .
 const { Sacco, Rider, UserModel } = require('./db.models.js');
 
@@ -324,10 +339,29 @@ app.put('/api/saccos/:id', jwtMW, (req, res) => {
 });
 
 
+
+// handling errors using the default Error object
+// This middleware will handle all the errors related to the database, application
+app.use((req, res, next)=> {
+  const error = new Error('NOT FOUND');
+  error.status = 404;
+  next(error);
+})
+
+app.use((error, req, res, next)=>{
+  res.status(error.status || 500);
+  res.json({
+      error: {
+          message: error.message
+      }
+  })
+});
+
+
 // creating a connection to mongoose
 // 'mongodb://localhost/fika-safe'
 mongoose
-  .connect('mongodb://localhost/fika-safe', { useNewUrlParser: true })
+  .connect(db, { useNewUrlParser: true })
   .then(() => {
     app.listen(4000, () => {
       console.log("Listening on port 4000");
