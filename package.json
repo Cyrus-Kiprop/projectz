@@ -72,6 +72,7 @@
     "yup": "^0.27.0"
   },
   "devDependencies": {
+    "husky": "3.0.2",
     "nodemon": "1.19.1"
   }
 }
