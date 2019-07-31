@@ -5,6 +5,7 @@ import Footer from 'components/Footers/AdminFooter.jsx';
 import Header from 'components/Headers/Header.jsx';
 import Home from 'components/AdminHome.jsx';
 import { Container } from 'reactstrap';
+import { withRouter } from "react-router";
 
 /* Once the 'Authservice' and 'withAuth' componenets are created, import them into App.js */
 import AuthHelperMethods from 'AuthHelperMethods.js';
@@ -12,6 +13,38 @@ import AuthHelperMethods from 'AuthHelperMethods.js';
 import withAuth from 'withAuth.js';
 
 class Dashboard extends Component {
+
+constructor(){
+  super();
+  this.state={
+    data:[]
+  }
+}
+
+componentDidMount() {
+  this.loadData();
+}
+
+componentDidUpdate(prevProps) {
+  if (this.props.location !== prevProps.location) {
+    this.loadData();
+  }
+}
+// loading the state with data
+loadData() {
+  // axios is so messsy
+  fetch(`/api/saccos`)
+    .then(response => response.json())
+    .then(data => {
+      // console.log(data)
+      this.setState({ data });
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+
   render() {
     return (
       <>
@@ -24,7 +57,7 @@ class Dashboard extends Component {
         />
         <div className="main-content" ref="mainContent">
           <Navbar />
-          <Header />
+          <Header data={this.state.data}/>
           <Home />
           <Container fluid>
             <Footer />

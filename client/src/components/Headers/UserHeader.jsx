@@ -40,8 +40,7 @@ class UserHeader extends React.Component {
           <Container className="d-flex align-items-center" fluid>
             <Row>
               <Col lg="7" md="10">
-                <h1 className="display-2 text-white">Ubuntu Sacco</h1>
-
+                <h1 className="display-2 text-white">{this.props.name}</h1>
               </Col>
             </Row>
           </Container>

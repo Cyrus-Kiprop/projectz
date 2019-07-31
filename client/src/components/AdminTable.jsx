@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
+
 import {
     Table,
   } from 'reactstrap';
-  import {Row} from 'components/AdminRow.jsx';
+  import AdminRow from 'components/AdminRow.jsx';
 
   
 
@@ -11,18 +12,27 @@ export default class AdminTable extends Component{
     super(props)
     
     this.state = {
-      data: [
-        {saccoName: "My house", registeredDate: '12/06/2017', status: 'Active', contacts: '07078957867', location: "Kondele"}, 
-        {saccoName: "The Sacco", registeredDate: '12/12/2018', status: 'Deactivated', contacts: '0778456322', location: "Kisian"}, 
-        {saccoName: "Error 404", registeredDate: '02/07/2019', status: 'Active', contacts: '0789467325', location: "Nyamasaria"},
-        {saccoName: "Sacco", registeredDate: '02/07/2019', status: 'Active', contacts: '0789467325', location: "Kombewa"},
-      ],
-      // sortType: "asc"
+      data: [],
+      sortType: "asc"
     }
     this.compareBy.bind(this);
     this.sortBy.bind(this);
   }
-  
+  componentWillMount() {
+    this.setState({
+      data:this.props.data
+    });
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(this.props.data !== nextProps.data){
+      this.setState({
+        data:nextProps.data
+      })
+    }
+
+  }
+  // compare methods
   compareBy(key) {
     return function (a, b) {
       if (a[key] < b[key]) return -1;
@@ -39,7 +49,7 @@ compareBy2(key) {
 }
 
 
- 
+//  sorting methods
   sortBy(key) {
     let arrayCopy = [...this.state.data];
     arrayCopy.sort(this.compareBy(key));
@@ -51,10 +61,13 @@ compareBy2(key) {
     arrayCopy.sort(this.compareBy2(key));
     this.setState({data: arrayCopy});
   }
+
+
   
     render(){
       // const revsort = ()
-      const rows = this.state.data.map( (rowData) => <Row {...rowData} />);
+      console.log(this.state.data);
+      const rows = this.state.data.map((rowData) => <AdminRow key={rowData._id} data={rowData} />);
         return(
 
             <Table className="align-items-center table-flush" responsive>
@@ -74,8 +87,8 @@ compareBy2(key) {
                 </th>
                 <th   scope="col"> 
                 <i className="ni ni-bold-up" onClick={() => this.sortBy('contacts')} /> <br/>
-                <i className="ni ni-bold-down" onClick={() => this.sortBy2('contacts')} />
                 Contacts
+                <i className="ni ni-bold-down" onClick={() => this.sortBy2('contacts')} />
                 </th>
                 <th   scope="col"> 
                 <i className="ni ni-bold-up" onClick={() => this.sortBy('location')} /> <br/>
@@ -88,7 +101,9 @@ compareBy2(key) {
               </tr>
               
             </thead>
+            <tbody>
             {rows}
+            </tbody>
            </Table>
         )
     }

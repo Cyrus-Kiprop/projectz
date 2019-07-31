@@ -1,22 +1,5 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 // reactstrap components
 
 import {
@@ -29,36 +12,79 @@ import {
   Input,
   Container,
   Row,
-  Col,
-} from 'reactstrap';
+  Col
+} from "reactstrap";
 // core components
-import UserHeader from 'components/Headers/UserHeader.jsx';
-import AuthHelperMethods from 'AuthHelperMethods.js';
+import UserHeader from "components/Headers/UserHeader.jsx";
 //Our higher order component
-import withAuth from 'withAuth.js';
-import { couldStartTrivia } from 'typescript';
+import withAuth from "withAuth.js";
 
 class Profile extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
+      sacco: {},
+      diabled: true,
       red: true,
-      name: 'active',
+      name: "active"
     };
-
-    // onDeactivate:
   }
+  // lifecycle control
+  componentDidMount() {
+    // this.setState({ id: this.props.id });
+    const sacco = this.props.sacco;
+    this.setState({
+      sacco
+    });
+  }
+
+  // handle change
+  handleChange = event => {
+    const target = event.target;
+    const { name, value } = target;
+
+    event.preventDefault();
+    this.setState({
+      sacco: {
+        [name]: value
+      }
+    });
+  };
+
+  handleSubmit = event => {
+    event.preventDefault();
+    this.props.saveData(this.state.sacco);
+  };
+
+  // onDeactivate:
   onDeactivate() {
     this.setState({ red: !this.state.red });
     this.setState({ name: !this.state.name });
   }
-  render() {
-    let btn_class = this.state.red ? 'info' : 'danger';
-    let btn_name = this.state.name ? 'Active' : 'Deactivated';
 
+  // load Data for a specific sacc
+  render() {
+    let btn_class = this.state.red ? "info" : "danger";
+    let btn_name = this.state.name ? "Active" : "Deactivated";
+    //const { name,id} = this.props;
+    console.log(this.props.sacco);
+    const {
+      name,
+      email,
+      registration_number,
+      date_founded,
+      description,
+      address,
+      location,
+      telephone_number,
+      postal_code,
+      website,
+      password
+    } = this.props.sacco;
+    //console.log(id);
     return (
       <>
-        <UserHeader />
+        <UserHeader name={name} />
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
@@ -69,7 +95,7 @@ class Profile extends React.Component {
                 </Row>
 
                 <CardBody
-                  style={{ background: '#e4f0f7' }}
+                  style={{ background: "#e4f0f7" }}
                   className="pt-0 pt-md-4"
                 >
                   <Row>
@@ -83,28 +109,28 @@ class Profile extends React.Component {
                     </div>
                   </Row>
                   <div className="text-center">
-                    <h3>Ubuntu Sacco</h3>
-                    <h3 style={{ background: '#cee0eb', borderRadius: '10px' }}>
+                    <h3>{this.state.sacco.name}</h3>
+                    <h3 style={{ background: "#cee0eb", borderRadius: "10px" }}>
                       {btn_name}
                     </h3>
                     <div className="h5 font-weight-300">
                       <i className="ni location_pin mr-2" />
-                      P.O. Box 656, Kisumu
+                      {address}, {location}
                     </div>
                     <div className="h5 mt-4">
                       <i className="ni business_briefcase-24 mr-2" />
-                      Registration Number: NJDFHY747VG
+                      Registration Number: {registration_number}
                     </div>
                     <div>
                       <i className="ni education_hat mr-2" />
-                      Email: ubuntusacco@ubuntu.com
+                      Email: {email}
                     </div>
                     <div>
                       <i className="ni education_hat mr-2" />
-                      Year Founded: 2018
+                      Year Founded: {date_founded}
                     </div>
                     <hr className="my-4" />
-                    <p>Description Description......</p>
+                    <p>{description}</p>
                   </div>
                 </CardBody>
               </Card>
@@ -149,7 +175,9 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="sacconame"
+                              value={name}
+                              onChange={this.handleChange}
+                              name="name"
                               placeholder="Sacco Name"
                               type="text"
                             />
@@ -164,6 +192,9 @@ class Profile extends React.Component {
                               Email address
                             </label>
                             <Input
+                              value={email}
+                              name="email"
+                              onChange={this.handleChange}
                               className="form-control-alternative"
                               id="input-email"
                               placeholder="Enter email"
@@ -183,7 +214,9 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="registration-number"
+                              value={registration_number}
+                              name="registration_number"
+                              onChange={this.handleChange}
                               placeholder="Registration Number"
                               type="text"
                             />
@@ -199,7 +232,9 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="year-founded"
+                              value={date_founded}
+                              name="date_founded"
+                              onChange={this.handleChange}
                               placeholder="Year founded"
                               type="text"
                             />
@@ -223,8 +258,10 @@ class Profile extends React.Component {
                               Address
                             </label>
                             <Input
+                              value={address}
+                              name="address"
+                              onChange={this.handleChange}
                               className="form-control-alternative"
-                              id="input-address"
                               placeholder="Enter Address"
                               type="text"
                             />
@@ -242,7 +279,9 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="phone"
+                              value={telephone_number}
+                              name="telephone_number"
+                              onChange={this.handleChange}
                               placeholder="Enter Phone Number"
                               type="text"
                             />
@@ -258,7 +297,9 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="postal-code"
+                              value={postal_code}
+                              name="postal_code"
+                              onChange={this.handleChange}
                               placeholder="Postal code"
                               type="number"
                             />
@@ -274,7 +315,9 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="website"
+                              value={website}
+                              name="website"
+                              onChange={this.handleChange}
                               placeholder="website"
                               type="text"
                             />
@@ -288,7 +331,7 @@ class Profile extends React.Component {
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Create Password
+                              New Password
                             </label>
                             <Input
                               className="form-control-alternative"
@@ -307,7 +350,9 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="confirm-password"
+                              value={password}
+                              name="password"
+                              onChange={this.handleChange}
                               type="password"
                             />
                           </FormGroup>
@@ -322,6 +367,9 @@ class Profile extends React.Component {
                         <label>Description</label>
                         <Input
                           className="form-control-alternative"
+                          value={description}
+                          name="description"
+                          onChange={this.handleChange}
                           placeholder="A few words about you..."
                           rows="4"
                           type="textarea"
@@ -329,8 +377,8 @@ class Profile extends React.Component {
                       </FormGroup>
                       <Button
                         color="info"
-                        href="#pablo"
-                        onClick={e => e.preventDefault()}
+                        diabled="true "
+                        onClick={this.handleSubmit}
                       >
                         Save
                       </Button>
@@ -346,4 +394,4 @@ class Profile extends React.Component {
   }
 }
 
-export default withAuth(Profile);
+export default Profile;

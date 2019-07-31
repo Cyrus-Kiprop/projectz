@@ -1,7 +1,11 @@
 import React from 'react';
 import Picker from './DatePicker.jsx'
 import { MDBCol, MDBIcon } from 'mdbreact';
+import queryString from 'query-string';
+import { withRouter } from "react-router";
+
 import AdminTable from './AdminTable.jsx'
+
 
 import {
   Badge,
@@ -32,18 +36,56 @@ import Header from 'components/Headers/Header.jsx';
 import { Link } from "react-router-dom"
 import AdminRow from 'components/AdminRow.jsx';
 
-export default class TableWhite extends React.Component {
-  state = {
-    sort: { column: "col", order: "desc" },
-    columns: {
-      col: { name: "Satatus", filterText: "", defaultSortOrder: "desc"},
+class TableWhite extends React.Component {
+constructor(){
+  super()
+  this.state = { data: [], sortBy: 'name' };
+}
+  // loading the data 
 
+  componentDidMount() {
+    this.loadData();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      this.loadData();
     }
   }
+
+  setFilter(query) {
+    // very important to stringify the data
+    const { history, location } = this.props;
+    const dataQuery = queryString.stringify(query);
+    console.log(dataQuery);
+    history.push(`${location.pathname}?${dataQuery}`);
+  }
+
+  // sorting handler function
+  handleSortChange(event) {
+    this.setState({
+      sortBy: event.target.value
+    });
+  }
+
+  // this function loads the load data from the database
+  loadData() {
+    // axios is so messsy
+    fetch(`/api/saccos`)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        this.setState({ data });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+
   
   render() {
-
-
+    const { data, sortBy } = this.state;
     return (
       <div>
       <Link to="/admin/new-sacco">
@@ -82,7 +124,7 @@ export default class TableWhite extends React.Component {
             <DropdownItem>Inactive</DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
-       <AdminTable />
+       <AdminTable data={data}/>
         <CardFooter className="py-4">
           <nav aria-label="...">
             <Pagination
@@ -127,5 +169,6 @@ export default class TableWhite extends React.Component {
     );
   }
 }
+export default withRouter(TableWhite)
 
 

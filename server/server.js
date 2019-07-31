@@ -6,6 +6,7 @@ const exjwt = require('express-jwt');
 const express = require('express')
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const nodeMailer = require('nodemailer');
 
 // authentication middlware
 // const jwtMW = require('./middleware');
@@ -215,7 +216,7 @@ app.delete('api/riders/:id', (req, res) => {
 });
 // THIS IS THE SACCOS APIS
 // get all saccos
-app.get('/api/saccos', jwtMW, (req, res) => {
+app.get('/api/saccos', (req, res) => {
   const { status, dateLte, dateGte } = req.query // destructuring
   console.log(new Date(dateLte));
   console.log(new Date(dateGte));
@@ -254,10 +255,11 @@ app.get('/api/saccos', jwtMW, (req, res) => {
   }
 
 });
-app.get('/api/saccos/:id', jwtMW, (req, res) => { // parameter
+app.get('/api/saccos/:id', (req, res) => { // parameter
   let saccoId;
   try {
     saccoId = req.params.id;
+    console.log(saccoId)
   } catch (error) {
     res.json({ message: `Invalid sacco id ${error}` });
   }
@@ -265,7 +267,7 @@ app.get('/api/saccos/:id', jwtMW, (req, res) => { // parameter
   Sacco.findById({ _id: saccoId }).then((sacco) => {
     res.json(sacco).status(200);// this a single object rbeing returned
   }).catch((err) => {
-    res.send(`Internal server error${err.stack}`).status(400);
+    res.send(`Internal server error${err}`).status(400);
   });
 });
 
@@ -300,7 +302,7 @@ app.delete('/api/saccos/:id', jwtMW, (req, res) => {
 });
 
 
-app.put('/api/saccos/:id', jwtMW, (req, res) => {
+app.put('/api/saccos/:id', (req, res) => {
   let saccosId;
   console.log(req.params.id);
   try {
