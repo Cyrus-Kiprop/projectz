@@ -1,47 +1,39 @@
-import React from 'react';
-import Picker from './DatePicker.jsx'
-import { MDBCol, MDBIcon } from 'mdbreact';
-import queryString from 'query-string';
+import React from "react";
+import Picker from "./DatePicker.jsx";
+import { MDBCol, MDBIcon } from "mdbreact";
+import queryString from "query-string";
 import { withRouter } from "react-router";
 
-import AdminTable from './AdminTable.jsx'
-
+import AdminTable from "./AdminTable.jsx";
 
 import {
-  Badge,
   Button,
-  Card,
-  CardHeader,
   CardFooter,
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  Media,
   Pagination,
   PaginationItem,
-  PaginationLink,
-  Progress,
-  Table,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  Input,
-  Container,
-  Row,
-  UncontrolledTooltip,
-} from 'reactstrap';
-// core components
-import Header from 'components/Headers/Header.jsx';
-import { Link } from "react-router-dom"
-import AdminRow from 'components/AdminRow.jsx';
+  PaginationLink
+} from "reactstrap";
+import { Link } from "react-router-dom";
 
 class TableWhite extends React.Component {
-constructor(){
-  super()
-  this.state = { data: [], sortBy: 'name' };
-}
-  // loading the data 
+  constructor() {
+    super();
+    this.state = {
+      data: [],
+      sortBy: "name",
+      sort: { column: "col", order: "desc" },
+      columns: {
+        col: { name: "Satatus", filterText: "", defaultSortOrder: "desc" }
+      },
+      query: "",
+      filteredData: []
+    };
+  }
+  // loading the data
 
   componentDidMount() {
     this.loadData();
@@ -52,6 +44,38 @@ constructor(){
       this.loadData();
     }
   }
+
+  handleInputChange = event => {
+    const query = event.target.value;
+
+    this.setState(prevState => {
+      const filteredData = prevState.data.filter(element => {
+        return element.name.toLowerCase().includes(query.toLowerCase());
+      });
+
+      return {
+        query,
+        filteredData
+      };
+    });
+  };
+
+  getData = () => {
+    fetch(`/api/saccos`)
+      .then(res => res.json())
+      .then(data => {
+        const { query } = this.state;
+        const filteredData = data.filter(element => {
+          return element.name.toLowerCase().includes(query.toLowerCase());
+        });
+
+        this.setState({
+          data,
+          filteredData
+        });
+      })
+      .catch(err => console.log(err));
+  };
 
   setFilter(query) {
     // very important to stringify the data
@@ -74,7 +98,7 @@ constructor(){
     fetch(`/api/saccos`)
       .then(response => response.json())
       .then(data => {
-        console.log(data)
+        console.log(data);
         this.setState({ data });
       })
       .catch(err => {
@@ -82,17 +106,17 @@ constructor(){
       });
   }
 
-
-  
   render() {
-    const { data, sortBy } = this.state;
+    const { data } = this.state;
     return (
       <div>
-      <Link to="/admin/new-sacco">
-        <Button style={{margin:"40px", float: "right"}} color="success">New Sacco</Button>
-      </Link>
+        <Link to="/admin/new-sacco">
+          <Button style={{ margin: "40px", float: "right" }} color="success">
+            New Sacco
+          </Button>
+        </Link>
         <br />
-        <UncontrolledDropdown style={{ marginTop: '20px' }} group>
+        <UncontrolledDropdown style={{ marginTop: "20px" }} group>
           <DropdownToggle caret color="info" data-toggle="dropdown">
             Sort
           </DropdownToggle>
@@ -102,7 +126,7 @@ constructor(){
           </DropdownMenu>
         </UncontrolledDropdown>
 
-        <MDBCol style={{ float: 'right'}} md="4">
+        <MDBCol style={{ float: "right" }} md="4">
           <form className="form-inline mt-4 mb-4">
             <MDBIcon icon="search" />
             <input
@@ -110,12 +134,20 @@ constructor(){
               type="text"
               placeholder="Search"
               aria-label="Search"
+              value={this.state.query}
+              onChange={this.handleInputChange}
             />
           </form>
+          <div>
+            {this.state.filteredData.map(i => (
+              <p>{i.name}</p>
+            ))}
+          </div>
         </MDBCol>
-          <div style={{marginLeft: "130px", marginTop: "-43px"}}>
-          <Picker /></div>
-          <UncontrolledDropdown style={{ marginTop:"-120px" }} group>
+        <div style={{ marginLeft: "130px", marginTop: "-43px" }}>
+          <Picker />
+        </div>
+        <UncontrolledDropdown style={{ marginTop: "-120px" }} group>
           <DropdownToggle caret color="info" data-toggle="dropdown">
             Status
           </DropdownToggle>
@@ -124,7 +156,7 @@ constructor(){
             <DropdownItem>Inactive</DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
-       <AdminTable data={data}/>
+        <AdminTable data={data} />
         <CardFooter className="py-4">
           <nav aria-label="...">
             <Pagination
@@ -169,6 +201,4 @@ constructor(){
     );
   }
 }
-export default withRouter(TableWhite)
-
-
+export default withRouter(TableWhite);

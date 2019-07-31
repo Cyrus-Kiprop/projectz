@@ -17,7 +17,11 @@
     "dev-all": "npm run watch-server & npm start",
     "lint": "eslint '**/*.{js,jsx}' --quiet",
     "lint:fix": "eslint '**/*.{js,jsx}' --fix",
-    "lint1": "eslint --ext js,jsx src server webpack.config.js"
+    "lint1": "eslint --ext js,jsx src server webpack.config.js",
+    "client-install": "npm install --prefix client",
+    "server": "nodemon -w server server/server.js server.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "eslintConfig": {
     "settings": {
