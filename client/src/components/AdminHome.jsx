@@ -37,6 +37,38 @@ class TableWhite extends React.Component {
     }
   }
 
+  handleInputChange = event => {
+    const query = event.target.value;
+
+    this.setState(prevState => {
+      const filteredData = prevState.data.filter(element => {
+        return element.name.toLowerCase().includes(query.toLowerCase());
+      });
+
+      return {
+        query,
+        filteredData
+      };
+    });
+  };
+
+  getData = () => {
+    fetch(`/api/saccos`)
+      .then(res => res.json())
+      .then(data => {
+        const { query } = this.state;
+        const filteredData = data.filter(element => {
+          return element.name.toLowerCase().includes(query.toLowerCase());
+        });
+
+        this.setState({
+          data,
+          filteredData
+        });
+      })
+      .catch(err => console.log(err));
+  };
+
   setFilter(query) {
     // very important to stringify the data
     const { history, location } = this.props;
@@ -108,8 +140,15 @@ class TableWhite extends React.Component {
               onChange={() => this.handleSearchChange}
               placeholder="Search"
               aria-label="Search"
+              value={this.state.query}
+              onChange={this.handleInputChange}
             />
           </form>
+          <div>
+            {this.state.filteredData.map(i => (
+              <p>{i.name}</p>
+            ))}
+          </div>
         </MDBCol>
         <div style={{ marginLeft: "130px", marginTop: "-43px" }}>
           <Picker />
