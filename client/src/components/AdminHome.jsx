@@ -1,47 +1,31 @@
-import React from 'react';
-import Picker from './DatePicker.jsx'
-import { MDBCol, MDBIcon } from 'mdbreact';
-import queryString from 'query-string';
+import React from "react";
+import Picker from "./DatePicker.jsx";
+import { MDBCol, MDBIcon } from "mdbreact";
+import queryString from "query-string";
 import { withRouter } from "react-router";
 
-import AdminTable from './AdminTable.jsx'
-
+import AdminTable from "./AdminTable.jsx";
 
 import {
-  Badge,
   Button,
-  Card,
-  CardHeader,
   CardFooter,
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  Media,
   Pagination,
   PaginationItem,
-  PaginationLink,
-  Progress,
-  Table,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  Input,
-  Container,
-  Row,
-  UncontrolledTooltip,
-} from 'reactstrap';
-// core components
-import Header from 'components/Headers/Header.jsx';
-import { Link } from "react-router-dom"
-import AdminRow from 'components/AdminRow.jsx';
+  PaginationLink
+} from "reactstrap";
+import { Link } from "react-router-dom";
+import { copyFileSync } from "fs";
 
 class TableWhite extends React.Component {
-constructor(){
-  super()
-  this.state = { data: [], sortBy: 'name' };
-}
-  // loading the data 
+  constructor() {
+    super();
+    this.state = { data: [], sortBy: "name", searchQuery: "" };
+  }
+  // loading the data
 
   componentDidMount() {
     this.loadData();
@@ -67,6 +51,16 @@ constructor(){
       sortBy: event.target.value
     });
   }
+  handleSearchChange = event => {
+    event.preventDefault();
+    const target = event.target;
+    const { value } = target;
+    this.setState({
+      searchQuery: event.target.value
+    });
+    this.props.search(this.state.searchQuery);
+    console.log(this.state.searchQuery);
+  };
 
   // this function loads the load data from the database
   loadData() {
@@ -74,7 +68,7 @@ constructor(){
     fetch(`/api/saccos`)
       .then(response => response.json())
       .then(data => {
-        console.log(data)
+        console.log(data);
         this.setState({ data });
       })
       .catch(err => {
@@ -82,17 +76,19 @@ constructor(){
       });
   }
 
-
-  
   render() {
-    const { data, sortBy } = this.state;
+    console.log(this.state.searchQuery);
+    const { data } = this.state;
+    console.log(this.props);
     return (
       <div>
-      <Link to="/admin/new-sacco">
-        <Button style={{margin:"40px", float: "right"}} color="success">New Sacco</Button>
-      </Link>
+        <Link to="/admin/new-sacco">
+          <Button style={{ margin: "40px", float: "right" }} color="success">
+            New Sacco
+          </Button>
+        </Link>
         <br />
-        <UncontrolledDropdown style={{ marginTop: '20px' }} group>
+        <UncontrolledDropdown style={{ marginTop: "20px" }} group>
           <DropdownToggle caret color="info" data-toggle="dropdown">
             Sort
           </DropdownToggle>
@@ -102,20 +98,23 @@ constructor(){
           </DropdownMenu>
         </UncontrolledDropdown>
 
-        <MDBCol style={{ float: 'right'}} md="4">
+        <MDBCol style={{ float: "right" }} md="4">
           <form className="form-inline mt-4 mb-4">
             <MDBIcon icon="search" />
             <input
               className="form-control form-control-sm ml-3 w-75"
               type="text"
+              value={this.state.searchQuery}
+              onChange={() => this.handleSearchChange}
               placeholder="Search"
               aria-label="Search"
             />
           </form>
         </MDBCol>
-          <div style={{marginLeft: "130px", marginTop: "-43px"}}>
-          <Picker /></div>
-          <UncontrolledDropdown style={{ marginTop:"-120px" }} group>
+        <div style={{ marginLeft: "130px", marginTop: "-43px" }}>
+          <Picker />
+        </div>
+        <UncontrolledDropdown style={{ marginTop: "-120px" }} group>
           <DropdownToggle caret color="info" data-toggle="dropdown">
             Status
           </DropdownToggle>
@@ -124,7 +123,7 @@ constructor(){
             <DropdownItem>Inactive</DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
-       <AdminTable data={data}/>
+        <AdminTable data={data} />
         <CardFooter className="py-4">
           <nav aria-label="...">
             <Pagination
@@ -169,6 +168,4 @@ constructor(){
     );
   }
 }
-export default withRouter(TableWhite)
-
-
+export default withRouter(TableWhite);

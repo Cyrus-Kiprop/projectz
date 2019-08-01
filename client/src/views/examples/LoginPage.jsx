@@ -1,28 +1,28 @@
-import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React from "react";
+import { Route, Switch } from "react-router-dom";
 // reactstrap components
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col } from "reactstrap";
 
 // core components
-import Login from 'components/Login.jsx';
-import AuthNavbar from 'components/Navbars/AuthNavbar.jsx';
-import AuthFooter from 'components/Footers/AuthFooter.jsx';
+import Login from "components/Login.jsx";
+import AuthNavbar from "components/Navbars/AuthNavbar.jsx";
+import AuthFooter from "components/Footers/AuthFooter.jsx";
 
-import AuthHelperMethods from 'AuthHelperMethods.js';
+import AuthHelperMethods from "AuthHelperMethods.js";
 
 class LoginPage extends React.Component {
   constructor() {
     super();
     this.state = {
-      email: '',
-      password: '',
-    } ;
+      email: "",
+      password: ""
+    };
   }
   Auth = new AuthHelperMethods(); // instantiating the method helper class
   // onChange handlers
   handleChange = ({ target: { name, value } }) => {
     this.setState({
-      [name]: value,
+      [name]: value
     });
   };
 
@@ -35,7 +35,7 @@ class LoginPage extends React.Component {
         if (res === false) {
           return alert("Sorry those credentials don't exist!");
         }
-        this.props.history.replace('/');
+        this.props.history.replace("/");
       })
       .catch(err => {
         alert(err);
@@ -43,7 +43,7 @@ class LoginPage extends React.Component {
   };
   componentWillMount() {
     /* Here is a great place to redirect someone who is already logged in to the protected route */
-    if (this.Auth.loggedIn()) this.props.history.replace('/');
+    if (this.Auth.loggedIn()) this.props.history.replace("/");
   }
 
   render() {
